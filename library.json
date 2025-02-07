@@ -1,7 +1,7 @@
 {
-    "name": "Module Fan",
+    "name": "M5ModuleFan",
     "description": "M5Stack Library of Module Fan",
-    "keywords": "Module Fan",
+    "keywords": "M5GFX,M5Stack,M5ModuleFan",
     "authors": {
         "name": "M5Stack",
         "url": "http://www.m5stack.com"
@@ -18,6 +18,9 @@
         "espressif32",
         "native"
     ],
-    "headers": "m5_module_fan.hpp"
-
+    "headers": "m5_module_fan.hpp",
+    "dependencies": {
+      "M5Unified": "*",
+      "M5GFX": "*"
+  }  
 }
