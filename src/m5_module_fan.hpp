@@ -295,7 +295,7 @@ private:
     uint8_t _addr;
     uint8_t _scl;
     uint8_t _sda;
-    uint8_t _speed;
+    uint32_t _speed;
 
     // Mutex flag for indicating whether the mutex is locked.
     bool mutexLocked = false;  // Mutex semaphore.
