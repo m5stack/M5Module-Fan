@@ -32,7 +32,7 @@ void loop()
 {
     Serial.printf("\r\n");
     Serial.printf(" {\r\n");
-    Serial.printf("    Work Status      : %d\r\n", moduleFan.getWorkStatus());
+    Serial.printf("    Work Status      : %d\r\n", moduleFan.getStatus());
     Serial.printf("    PWM  Frequency   : %d\r\n", moduleFan.getPWMFrequency());
     Serial.printf("    PWM  Duty Cycle  : %d\r\n", moduleFan.getPWMDutyCycle());
     Serial.printf("    RPM              : %d\r\n", moduleFan.getRPM());

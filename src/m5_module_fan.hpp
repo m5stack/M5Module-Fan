@@ -23,88 +23,56 @@
 
 /**
  * @brief Default address of the device.
- *
- * This is the default address used to communicate with the device.
- * The value is 0x18.
  */
 #define MODULE_FAN_BASE_ADDR (0x18)
 
 /**
  * @brief Minimum valid I2C address.
- *
- * This is the minimum valid I2C address for the device. The I2C address must be greater than or equal to this value.
  */
-#define I2C_ADDR_MIN (0x08)
+#define MODULE_FAN_I2C_ADDR_MIN (0x08)
 
 /**
  * @brief Maximum valid I2C address.
- *
- * This is the maximum valid I2C address for the device. The I2C address must be less than or equal to this value.
  */
-#define I2C_ADDR_MAX (0x77)
+#define MODULE_FAN_I2C_ADDR_MAX (0x77)
 
 /**
  * @brief Module fan control register, used to enable or disable the fan.
- *
- * Setting the value to 0 disables the fan, and setting it to 1 enables the fan.
- * The register address is typically 0x00.
  */
 #define MODULE_FAN_CONTROL_REG (0x00)
 
 /**
  * @brief Control register for setting the frequency of the PWM waveform.
- *
- * The specific frequency setting can be referenced through the `pwm_frequency_t` enumeration.
- * The register address is typically 0x10.
  */
 #define MODULE_FAN_PWM_FREQUENCY_REG (0x10)
 
 /**
  * @brief Control register for setting the duty cycle of the PWM waveform.
- *
- * The duty cycle range is from 0 to 100, where 0 represents 0% duty cycle (off) and 100 represents 100% duty cycle
- * (fully on). The register address is typically 0x20.
  */
 #define MODULE_FAN_PWM_DUTY_CYCLE_REG (0x20)
 
 /**
  * @brief Register for recording the fan's RPM (revolutions per minute).
- *
- * This register is used to store the current speed (RPM) of the fan.
- * The register address is typically 0x30.
  */
 #define MODULE_FAN_RPM_REG (0x30)
 
 /**
  * @brief Register for recording the frequency of the fan's output signal.
- *
- * This register is used to store the frequency of the signal output from the fan's output pin.
- * The register address is typically 0x40.
  */
 #define MODULE_FAN_SIGNAL_FREQUENCY_REG (0x40)
 
 /**
  * @brief Register for saving configuration to internal flash memory.
- *
- * This register is used to save the configuration settings, such as FAN_CONTROL_REG, FAN_PWM_FREQUENCY_REG, and
- * FAN_PWM_DUTY_CYCLE_REG. Writing 1 to this register will trigger the saving of the configuration, ensuring the
- * settings are retained even after power loss. The register address is typically 0xF0.
  */
 #define MODULE_FAN_SAVE_FLASH_REG (0xF0)
 
 /**
  * @brief Firmware software version register.
- *
- * This register holds the firmware software version of the fan module.
- * The register address is typically 0xFE.
  */
 #define MODULE_FAN_FIRMWARE_VERSION_REG (0xFE)
 
 /**
  * @brief I2C address register of the device.
- *
- * This register holds the I2C address of the fan module.
- * The register address is typically 0xFF.
  */
 #define MODULE_FAN_I2C_ADDRESS_REG (0xFF)
 
@@ -118,7 +86,7 @@
 typedef enum {
     MODULE_FAN_DISABLE = 0x00,  // Disable the fan
     MODULE_FAN_ENABLE  = 0x01,  // Enable the fan
-} module_fan_work_t;            // Fan's working state
+} module_fan_status_t;          // Fan's working state
 
 /**
  * @brief Enum for PWM waveform frequency types.
@@ -130,11 +98,11 @@ typedef enum {
  * - PWM_48KHZ: 48 kHz frequency.
  */
 typedef enum {
-    PWM_1KHZ  = 0x00,  // 1 kHz frequency
-    PWM_12KHZ = 0x01,  // 12 kHz frequency
-    PWM_24KHZ = 0x02,  // 24 kHz frequency
-    PWM_48KHZ = 0x03,  // 48 kHz frequency
-} pwm_frequency_t;     // PWM waveform frequency types
+    PWM_1KHZ  = 0x00,     // 1 kHz frequency
+    PWM_12KHZ = 0x01,     // 12 kHz frequency
+    PWM_24KHZ = 0x02,     // 24 kHz frequency
+    PWM_48KHZ = 0x03,     // 48 kHz frequency
+} module_fan_pwm_freq_t;  // PWM waveform frequency types
 
 class M5ModuleFan {
 public:
@@ -161,11 +129,11 @@ public:
      * This function allows the user to set the fan's operational status, either enabling or disabling the fan
      * based on the provided `newStatus` argument.
      *
-     * @param newStatus The desired fan working status, which can be:
+     * @param status The desired fan working status, which can be:
      *                  - MODULE_FAN_DISABLE: Disable the fan.
      *                  - MODULE_FAN_ENABLE: Enable the fan.
      */
-    void setWorkStatus(module_fan_work_t newStatus);
+    void setStatus(module_fan_status_t status);
 
     /**
      * @brief Gets the current working status of the fan.
@@ -176,20 +144,20 @@ public:
      *         - MODULE_FAN_DISABLE: Fan is disabled.
      *         - MODULE_FAN_ENABLE: Fan is enabled.
      */
-    uint8_t getWorkStatus(void);
+    module_fan_status_t getStatus(void);
 
     /**
      * @brief Sets the frequency of the PWM waveform.
      *
      * This function allows the user to set the desired frequency for the PWM waveform.
      *
-     * @param newFreq The desired PWM frequency, which can be one of the following:
+     * @param freq The desired PWM frequency, which can be one of the following:
      *                - PWM_1KHZ: 1 kHz frequency.
      *                - PWM_12KHZ: 12 kHz frequency.
      *                - PWM_24KHZ: 24 kHz frequency.
      *                - PWM_48KHZ: 48 kHz frequency.
      */
-    void setPWMFrequency(pwm_frequency_t newFreq);
+    void setPWMFrequency(module_fan_pwm_freq_t freq);
 
     /**
      * @brief Gets the current frequency of the PWM waveform.
@@ -202,7 +170,7 @@ public:
      *         - PWM_24KHZ: 24 kHz frequency.
      *         - PWM_48KHZ: 48 kHz frequency.
      */
-    uint8_t getPWMFrequency(void);
+    module_fan_pwm_freq_t getPWMFrequency(void);
 
     /**
      * @brief Sets the duty cycle of the PWM waveform.
@@ -210,9 +178,9 @@ public:
      * This function allows the user to set the desired duty cycle for the PWM waveform.
      * The duty cycle value can range from 0 to 100.
      *
-     * @param newDutyCycle The desired duty cycle (0-100).
+     * @param dutyCycle The desired duty cycle (0-100).
      */
-    void setPWMDutyCycle(uint8_t newDutyCycle);
+    void setPWMDutyCycle(uint8_t dutyCycle);
 
     /**
      * @brief Gets the current duty cycle of the PWM waveform.
@@ -248,7 +216,7 @@ public:
      * This function saves the current configuration settings to the internal flash memory,
      * ensuring that the settings are retained even after a power cycle.
      */
-    void saveToFlash(void);
+    void saveConfig(void);
 
     /**
      * @brief Gets the firmware version number.
@@ -273,13 +241,13 @@ public:
      * Please note that this operation involves writing to the device's flash memory, which may take more than 20ms to
      * complete.
      *
-     * @param newAddr The new I2C address to be set for the device.
+     * @param addr The new I2C address to be set for the device.
      *                The address should be within the range 0x08 to 0x77.
      *                If it is outside this range, the closest valid address will be used.
      *
      * @return The newly set I2C address.
      */
-    uint8_t setI2CAddress(uint8_t newAddr);
+    uint8_t setI2CAddress(uint8_t addr);
 
     /**
      * @brief Gets the current I2C device address.

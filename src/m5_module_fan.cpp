@@ -89,46 +89,46 @@ bool M5ModuleFan::begin(TwoWire *wire, uint8_t addr, uint8_t sda, uint8_t scl, u
         return false;
     }
 }
-void M5ModuleFan::setWorkStatus(module_fan_work_t newStatus)
+void M5ModuleFan::setStatus(module_fan_status_t status)
 {
     acquireMutex();
     uint8_t reg = MODULE_FAN_CONTROL_REG;
-    writeBytes(_addr, reg, (uint8_t *)&newStatus, 1);
+    writeBytes(_addr, reg, (uint8_t *)&status, 1);
     releaseMutex();
 }
-uint8_t M5ModuleFan::getWorkStatus(void)
+module_fan_status_t M5ModuleFan::getStatus(void)
 {
     acquireMutex();
     uint8_t temp = 0;
     uint8_t reg  = MODULE_FAN_CONTROL_REG;
     readBytes(_addr, reg, (uint8_t *)&temp, 1);
     releaseMutex();
-    return temp;
+    return (module_fan_status_t)temp;
 }
-void M5ModuleFan::setPWMFrequency(pwm_frequency_t newFreq)
+void M5ModuleFan::setPWMFrequency(module_fan_pwm_freq_t freq)
 {
     acquireMutex();
     uint8_t reg = MODULE_FAN_PWM_FREQUENCY_REG;
-    writeBytes(_addr, reg, (uint8_t *)&newFreq, 1);
+    writeBytes(_addr, reg, (uint8_t *)&freq, 1);
     releaseMutex();
 }
-uint8_t M5ModuleFan::getPWMFrequency(void)
+module_fan_pwm_freq_t M5ModuleFan::getPWMFrequency(void)
 {
     acquireMutex();
     uint8_t temp = 0;
     uint8_t reg  = MODULE_FAN_PWM_FREQUENCY_REG;
     readBytes(_addr, reg, (uint8_t *)&temp, 1);
     releaseMutex();
-    return temp;
+    return (module_fan_pwm_freq_t)temp;
 }
-void M5ModuleFan::setPWMDutyCycle(uint8_t newDutyCycle)
+void M5ModuleFan::setPWMDutyCycle(uint8_t dutyCycle)
 {
     acquireMutex();
-    if (newDutyCycle > 100) {
-        newDutyCycle = 100;
+    if (dutyCycle > 100) {
+        dutyCycle = 100;
     }
     uint8_t reg = MODULE_FAN_PWM_DUTY_CYCLE_REG;
-    writeBytes(_addr, reg, (uint8_t *)&newDutyCycle, 1);
+    writeBytes(_addr, reg, (uint8_t *)&dutyCycle, 1);
     releaseMutex();
 }
 uint8_t M5ModuleFan::getPWMDutyCycle(void)
@@ -158,7 +158,7 @@ uint16_t M5ModuleFan::getSignalFrequency(void)
     releaseMutex();
     return temp;
 }
-void M5ModuleFan::saveToFlash(void)
+void M5ModuleFan::saveConfig(void)
 {
     acquireMutex();
     uint8_t temp = 1;
@@ -175,13 +175,13 @@ uint8_t M5ModuleFan::getFirmwareVersion(void)
     releaseMutex();
     return temp;
 }
-uint8_t M5ModuleFan::setI2CAddress(uint8_t newAddr)
+uint8_t M5ModuleFan::setI2CAddress(uint8_t addr)
 {
     acquireMutex();
-    newAddr     = constrain(newAddr, I2C_ADDR_MIN, I2C_ADDR_MAX);
+    addr        = constrain(addr, MODULE_FAN_I2C_ADDR_MIN, MODULE_FAN_I2C_ADDR_MAX);
     uint8_t reg = MODULE_FAN_I2C_ADDRESS_REG;
-    writeBytes(_addr, reg, (uint8_t *)&newAddr, 1);
-    _addr = newAddr;
+    writeBytes(_addr, reg, (uint8_t *)&addr, 1);
+    _addr = addr;
     releaseMutex();
     return _addr;
 }
